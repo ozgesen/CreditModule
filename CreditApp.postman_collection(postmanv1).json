@@ -1,0 +1,703 @@
+{
+	"info": {
+		"_postman_id": "b224364f-471e-4c7f-9369-af7256adf54d",
+		"name": "CreditApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "2590359",
+		"_collection_link": "https://speeding-eclipse-364670.postman.co/workspace/DemoCreditApp~ccc9e2c8-2e37-4f4e-ac5d-15a2e33eaef6/collection/2590359-b224364f-471e-4c7f-9369-af7256adf54d?action=share&source=collection_link&creator=2590359"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/createAppUser",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Customer1Name\",\n  \"surname\": \"Customer1Surname\",\n  \"role\": \"CUSTOMER\",\n  \"username\": \"customer1\",\n  \"password\" : \"123\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/createAppUser"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/createCustomer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Ahmet\",\n  \"surname\": \"Yılmaz\",\n  \"creditLimit\": 5000.0\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/createCustomer"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/listCustomers",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/listCustomers"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/createLoan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerId\": 1,\n  \"amount\": 1050.0,\n  \"interestRate\": 0.1,\n  \"installmentsNum\": 6\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/createLoan"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/listAllLoans",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/listAllLoans"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/listLoans",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/listLoans?customerId=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"listLoans"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/listInstallments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/listInstallments?loanId=6",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"listInstallments"
+					],
+					"query": [
+						{
+							"key": "loanId",
+							"value": "6"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/payLoan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Define the login URL and credentials",
+							"let loginUrl = 'http://localhost:8080/login';  // Your login endpoint",
+							"let loginData = {",
+							"    \"username\": \"admin\",  // Replace with the username",
+							"    \"password\": \"admin\"   // Replace with the password",
+							"};",
+							"",
+							"// Send the login request",
+							"pm.sendRequest({",
+							"    url: loginUrl,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(loginData)",
+							"    }",
+							"}, function (err, res) {",
+							"    if (err) {",
+							"        console.log('Login failed: ', err);",
+							"        // If login fails, fail the request by making sure the token is not set",
+							"        pm.environment.unset(\"authToken\");",
+							"    } else {",
+							"        if (res.status === 200) {",
+							"            console.log('Login successful');",
+							"            // Assuming the server returns the token in JSON format",
+							"            let responseJson = res.json();",
+							"            if (responseJson.token) {",
+							"                // Set the token in the environment variables",
+							"                pm.environment.set(\"authToken\", responseJson.token);",
+							"            } else {",
+							"                console.log('Token not found in response');",
+							"            }",
+							"        } else {",
+							"            console.log('Login failed with status code: ', res.status);",
+							"            pm.environment.unset(\"authToken\");  // Unset the token if login failed",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "admin",
+						"username": "admin"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerId\": 1,\n  \"loanId\": 6,\n  \"amount\": 300.0\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/payLoan"
+			},
+			"response": []
+		}
+	]
+}

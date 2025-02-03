@@ -18,6 +18,7 @@ public class Status {
         status.put(2, "Customer not found.");
         status.put(3, "Operation failed.");
         status.put(4, "Loan successfully created.");
+        status.put(5, "Loan couldn't created.");
         status.put(403, "Forbidden");
     }
 

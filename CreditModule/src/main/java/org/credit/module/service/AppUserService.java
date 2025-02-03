@@ -46,7 +46,7 @@ public class AppUserService {
         //Authorized
         if (checkPassword(username, rawPassword) ) {
             Optional<AppUser> appUser = appUserRepository.findByUsername(username);
-            if(appUser.get().getRole() == "ADMIN") {
+            if(appUser.get().getRole().equals("ADMIN")) {
                 return 1L;
             } else {
                 Optional<Customer> appUserCustomer = customerService.getCustomer(id);
@@ -66,7 +66,7 @@ public class AppUserService {
         //Authorized
         if (checkPassword(username, rawPassword) ) {
             Optional<AppUser> appUser = appUserRepository.findByUsername(username);
-            if(appUser.get().getRole() == "ADMIN") {
+            if(appUser.get().getRole().equals("ADMIN")) {
                 return "admin";
             } else {
                 return "customer";

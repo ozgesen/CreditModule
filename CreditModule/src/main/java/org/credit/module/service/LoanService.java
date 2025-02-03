@@ -36,9 +36,10 @@ public class LoanService {
     }
     List<Integer> availableInstallmentsCounts = Arrays.asList(6, 9, 12, 24);
     public Integer createLoan(AppUser appUser, CreateLoanRequestBody createLoanRequestBody) {
-        if (appUser.getRole() == "ADMIN" ||
-                (appUser.getRole() == "CUSTOMER" &&
-                        (appUser.getCustomerId() == createLoanRequestBody.getCustomerId()) )) {
+        boolean accessCheck = appUser.getRole().equals("ADMIN") ||
+                (appUser.getRole().equals("CUSTOMER") &&
+                        (appUser.getCustomerId().equals(createLoanRequestBody.getCustomerId())) );
+        if (accessCheck) {
             Optional<Customer> customer = customerRepository.findCustomerById(createLoanRequestBody.getCustomerId());
             if (customer.isPresent()) {
                 //You should check if customer has enough limit to get this new loan
@@ -60,25 +61,21 @@ public class LoanService {
                     // - Due Date of Installments should be first day of months. So the first
                     //installment’s due date should be the first day of next month.
                     Float installmentAmount = newLoan.getLoanAmount() / createLoanRequestBody.getInstallmentsNum();
-                    IntStream.range(0, createLoanRequestBody.getInstallmentsNum()).forEach(i -> {
-
+                    for (int i = 0; i < createLoanRequestBody.getInstallmentsNum(); i++) {
                         LoanInstallment loanInstallment = new LoanInstallment();
                         loanInstallment.setLoanId(createdLoan.getId());
                         loanInstallment.setAmount(installmentAmount);
                         loanInstallment.setPaidAmount(0.0f);
                         loanInstallment.setDueDate(today.plusMonths(i + 1).with(TemporalAdjusters.firstDayOfMonth()));
                         loanInstallment.setIsPaid(false);
-                    });
+                        loanInstallmentRepository.save(loanInstallment);
+                    }
 
-
-                    return 4;
+                    return 0;
                 }
-                return 3;
-            } else {
-                return 2;
             }
         }
-        return 0;
+        return 5;
     }
 
     public static boolean isLoanIdPresent(List<Loan> loans, Long loanId) {
@@ -86,11 +83,13 @@ public class LoanService {
                 .anyMatch(customer -> customer.getId().equals(loanId));
     }
 
-    public Integer payLoan(AppUser appUser, Long customerId, Long loanId, Float customerPaidAmount) {
-
-        if (appUser.getRole() == "ADMIN" ||
-                (appUser.getRole() == "CUSTOMER" &&
-                        (appUser.getCustomerId() == customerId))) {
+    public ResponseEntity<String> payLoan(AppUser appUser, Long customerId, Long loanId, Float customerPaidAmount) {
+        Integer installmentsPaid = 0;
+        Float totalAmountSpent = 0.0f;
+        boolean isLoanPaidOff = false;
+        if (appUser.getRole().equals("ADMIN") ||
+                (appUser.getRole().equals("CUSTOMER") &&
+                        (appUser.getCustomerId().equals(customerId)))) {
 
         Optional<Customer> customer = customerRepository.findCustomerById(customerId);
         List<Loan> loans = loanRepository.findByCustomerId(customerId);
@@ -127,64 +126,63 @@ public class LoanService {
                         installmentAmount = installmentAmount + (0.001f * daysBetween);
                     }
                     if (customerPaidAmount < installmentAmount) {
-                        return 0; // paid amount is not enough for later pay
+                        break; // paid amount is not enough for later pay
                     }
                     customerPaidAmount = customerPaidAmount - installmentAmount;
                     loanInstallmentRepository.markAsPaid(loanId, installmentDueDate);
+                    installmentsPaid = installmentsPaid +1;
                     loanInstallmentRepository.updatePaidAmountAndDate(loanId,  installmentDueDate,
                             installmentAmount, today);
+                    totalAmountSpent = totalAmountSpent + installmentAmount;
                     counter ++;
 
                     List<LoanInstallment> notpaid= loanInstallments.stream()
                             .filter(installmnt -> installmnt.getIsPaid() == false).toList();
 
                     if (notpaid.isEmpty()) {
+                        isLoanPaidOff = true;
                         loanRepository.markLoanAsPaid(customerId, loanId);
                     }
                     customerRepository.updateCreditLimits(customerId, installment.getAmount());
                 }
 
-            } else {
-                // not has unpaid installment or paid amount is lower than first installment
-                return 0;
-            }
+            }// not has unpaid installment or paid amount is lower than first installment
 
         }
-
-        return 0;
     }
-        return 0;
+        return ResponseEntity.ok(String.format("Installments Paid: %d, Total Amount Spent: %.2f, Loan Paid Off: %s",
+                installmentsPaid, totalAmountSpent, isLoanPaidOff ? "Yes" : "No"));
     }
 
     public List<Loan> listLoans(AppUser appUser) {
-        if (appUser.getRole() == "ADMIN"){
+        if (appUser.getRole().equals("ADMIN")){
             return loanRepository.findAll();
 
-        } else if (appUser.getRole() == "CUSTOMER") {
+        } else if (appUser.getRole().equals("CUSTOMER")) {
             return loanRepository.findByCustomerId(appUser.getCustomerId());
         }
-        return (List<Loan>) ResponseEntity.ok(List.of());
+        return List.of();
     }
 
     public List<Loan> listLoans(AppUser appUser, Long customerId) {
-        if (appUser.getRole() == "ADMIN"){
+        if (appUser.getRole().equals("ADMIN")){
             return loanRepository.findByCustomerId(customerId);
-        } else if (appUser.getRole() == "CUSTOMER") {
+        } else if (appUser.getRole().equals("CUSTOMER")) {
             return loanRepository.findByCustomerId(appUser.getCustomerId());
         }
-        return (List<Loan>) ResponseEntity.ok(List.of());
+        return List.of();
     }
 
     public List<LoanInstallment> listLoanInstallment(AppUser appUser, Long loanId) {
-        if (appUser.getRole() == "ADMIN"){
+        if (appUser.getRole().equals("ADMIN")){
             return loanInstallmentRepository.findByLoanId(loanId);
-        } else if (appUser.getRole() == "CUSTOMER") {
+        } else if (appUser.getRole().equals("CUSTOMER")) {
             Optional<Loan> cusLoan = loanRepository.findById(loanId);
             if (cusLoan.isPresent() && cusLoan.get().getCustomerId() == appUser.getCustomerId()) {
                 return loanInstallmentRepository.findByLoanId(loanId);
             }
         }
-        return (List<LoanInstallment>) ResponseEntity.ok(List.of());
+        return List.of();
     }
 
 }
