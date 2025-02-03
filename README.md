@@ -105,3 +105,5 @@ This API enforces access control based on user roles. `ADMIN` users have full ac
 ## Contribution
 To contribute to this project, please create a `pull request`.
 
+## Test and Validation
+To check the endpoints please import the CreditApp.postman_collection.json. This collection covers all endpoints with Authorization (Basic Auth) with default admin - admin user. Pre-scripts for login and body and request paramsç
