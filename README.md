@@ -1,4 +1,4 @@
-Status = Initial commit send , unit tests and postman collections will be updated.
+Status = Initial commit sent , unit tests and postman collections will be updated.
 
 # CreditModule
 Credi and Payment Module
